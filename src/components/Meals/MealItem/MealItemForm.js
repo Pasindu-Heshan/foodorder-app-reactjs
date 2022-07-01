@@ -4,36 +4,46 @@ import React, {Component, useRef, useState} from "react";
 
 class MealItemForm extends Component{
   // const [amountIsValid, setAmountIsValid] = useState(true);
-  const amountInputRef = useRef();
+  // const amountInputRef = useRef();
 
   state = {
-      amountIsValid: true
+      amountIsValid: true,
+      amountInputRef: ''
   }
 
-  function async submitHandler(event) {
-        event.preventDefault();
+    handleChange = async (e) => {
+        const {name, value} = e.target;
+        await this.setState({
+            [name]: value,
+        })
+    };
 
-        const enteredAmount = amountInputRef.current.value;
-        const enteredAmountNumber = +enteredAmount;
 
-        if (
-            enteredAmount.trim().length === 0 ||
-            enteredAmountNumber < 1 ||
-            enteredAmountNumber > 5
-        ) {
-            await this.setState({amountIsValid: false});
-            return;
-        }
+   submitHandler = async (event) => {
+       event.preventDefault();
 
-        this.props.onAddToCart(enteredAmountNumber);
+       const enteredAmount = this.state.amountInputRef;
+       const enteredAmountNumber = +enteredAmount;
 
-    }
+       if (
+           enteredAmount.trim().length === 0 ||
+           enteredAmountNumber < 1 ||
+           enteredAmountNumber > 5
+       ) {
+           await this.setState({amountIsValid: false});
+           return;
+       }
+
+       this.props.onAddToCart(enteredAmountNumber);
+
+   }
 
     render() {
         return (
-            <form className={classes.form} onSubmit={submitHandler}>
+            <form className={classes.form} onSubmit={this.submitHandler}>
                 <Input
-                    ref={amountInputRef}
+                    onChange={this.handleChange}
+                    name = "amountInputRef"
                     label="Amount"
                     input={{
                         id: "amount_" + this.props.id,
